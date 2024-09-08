@@ -1,13 +1,48 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, TouchableHighlight, Text } from 'react-native';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+//@ts-ignore
+import Swipeable from 'react-native-swipeable';
+
+import SwipeButton from '@/components/SwipeButton';
 
 export default function TestScreen() {
+  // const leftContent = <ThemedText type="subtitle">Pull to activate</ThemedText>;
+
+  // const rightButtons = [
+  //   <TouchableHighlight><ThemedText type="subtitle">Button 1</ThemedText></TouchableHighlight>,
+  //   <TouchableHighlight><ThemedText type="subtitle">Button 2</ThemedText></TouchableHighlight>
+  // ];
+
+  // const MyListItem = () => {
+  //   return (
+  //     <Swipeable leftContent={leftContent} rightButtons={rightButtons}>
+  //       <ThemedText type="subtitle">My swipeable content</ThemedText>
+  //     </Swipeable>
+  //   );
+  // };
+  const leftContent = <Text>Pull to activate</Text>;
+
+  const rightButtons = [
+    <TouchableHighlight><Text>Button 1</Text></TouchableHighlight>,
+    <TouchableHighlight><Text>Button 2</Text></TouchableHighlight>
+  ];
+
+  const MyListItem = () => {
+    return (
+      <Swipeable leftContent={leftContent} rightButtons={rightButtons}>
+        <Text>My swipeable content</Text>
+      </Swipeable>
+    );
+  }
+
+
   return (
-    <ParallaxScrollView
+    <>
+       <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
       headerImage={
         <Image
@@ -15,38 +50,10 @@ export default function TestScreen() {
           style={styles.reactLogo}
         />
       }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+          <ThemedText type="subtitle">My swipeable content</ThemedText>
+          <SwipeButton />
+      </ParallaxScrollView>
+    </>
   );
 }
 

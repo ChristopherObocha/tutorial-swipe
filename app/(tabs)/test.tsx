@@ -1,43 +1,104 @@
-import { Image, StyleSheet } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  SafeAreaView,
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  Button,
+  StyleSheet,
+  ScrollView,
+  Alert
+} from 'react-native';
+import { RichText, Toolbar, useEditorBridge } from '@10play/tentap-editor';
+import NoteEditor from '@/components/NoteEditor';
 
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-
-import SwipeButton from '@/components/SwipeButton';
-
-export default function TestScreen() {
-  return (
-    <>
-       <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-          <ThemedText type="subtitle">My swipeable content</ThemedText>
-          <SwipeButton />
-      </ParallaxScrollView>
-    </>
-  );
+const initialContent = {
+  "type": "doc",
+  "content": [
+    {
+      "type": "paragraph",
+      "content": [
+        {
+          "type": "text",
+          "text": "This is a basic "
+        },
+        {
+          "type": "text",
+          "marks": [
+            {
+              "type": "bold"
+            }
+          ],
+          "text": "a boy!"
+        }
+      ]
+    }
+  ]
 }
 
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+export default function TestScreen() {
+  const [isEditorReady, setEditorReady] = useState(false);
+  const editor = useEditorBridge({
+    autofocus: true,
+    avoidIosKeyboard: true,
+    // initialContent: `<p>This is a basic example!</p>`,
+    initialContent: initialContent,
+  });
+
+  useEffect(() => {
+    // Check if editor is ready
+    const checkEditorReady = async () => {
+      const ready = await editor.getEditorState();
+      setEditorReady(true);
+    };
+    
+    checkEditorReady();
+  }, [editor]);
+
+  const handleSave = async () => {
+    if (isEditorReady) {
+      console.log('print', editor.getEditorState());
+      const text = await editor.getJSON();
+      console.log('print', JSON.stringify(text, null, 2));
+    } else {
+      Alert.alert('Editor is not ready yet!');
+    }
+  };
+
+  return (
+    <ScrollView style={exampleStyles.fullScreen} showsVerticalScrollIndicator={false}>
+      {/* <NoteEditor /> */}
+
+      <SafeAreaView style={exampleStyles.editorView}>
+      <RichText editor={editor} /> 
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={exampleStyles.keyboardAvoidingView}
+      >
+        <Toolbar editor={editor} />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+
+      <View style={{ height: 20 }} />
+      <Button onPress={handleSave} title='Save' color={'red'}/>
+    </ScrollView>
+  );
+};
+
+const exampleStyles = StyleSheet.create({
+  fullScreen: {
+    flex: 1,
+    paddingHorizontal: 15,
+    backgroundColor: 'grey'
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  keyboardAvoidingView: {
     position: 'absolute',
+    width: '100%',
+    bottom: 0,
+  },
+  editorView: {
+    flex: 1,
+    marginHorizontal: 15,
+    height: 200
   },
 });
